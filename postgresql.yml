@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+
+  db:
+    container_name: postgres_db
+    image: postgis/postgis:12-3.0
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - "postgresql_data:/var/lib/postgresql/data/"
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres-network
+
+  pgadmin:
+    container_name: postgres_pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@localhost"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    volumes:
+      - "pgadmin_data:/var/lib/pgadmin/"
+    ports:
+      - "16543:80"
+    networks:
+      - postgres-network
+    depends_on:
+      - db
+
+volumes:
+  postgresql_data:
+  pgadmin_data:
+
+networks:
+  postgres-network:
+    driver: bridge
